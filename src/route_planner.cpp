@@ -65,17 +65,10 @@ inline bool NodeCompare(RouteModel::Node * n1, RouteModel::Node * n2) {
 RouteModel::Node *RoutePlanner::NextNode() {
   
   if(open_list.size() > 0){
-    std::cout << "sorting open_list " << open_list.size() << std::endl;
-    for (int i = 0; i < open_list.size(); i++){
-      std::cout << (*open_list[i]).g_value + (*open_list[i]).h_value << std::endl;
-    }
-	std::sort(this->open_list.begin(), this->open_list.end(), NodeCompare);    
-    std::cout << "initializing next node" << std::endl;
+	  std::sort(this->open_list.begin(), this->open_list.end(), NodeCompare);    
     RouteModel::Node* next_node;
     next_node = open_list.back();
-    std::cout << "popping back open_list" << std::endl;
     open_list.pop_back();
-    std::cout << "returning node" << std::endl;
     return next_node;
   }else{
     std::cout << "open list empty" << std::endl;
@@ -131,19 +124,14 @@ void RoutePlanner::AStarSearch() {
     
     // TODO: Implement your solution here.
   while(open_list.size() > 0){
-        std::cout << "Calling NextNode" << std::endl;
         current_node = NextNode();
         if(current_node == end_node){
-            std::cout << "Calling FinalPath" << std::endl;
             m_Model.path = ConstructFinalPath(current_node);
-            std::cout << "Size: " << m_Model.path.size() << std::endl;
             return;
         }
         else{
-            std::cout << "Calling AddNeighbors" << std::endl;
             AddNeighbors(current_node);
         }
-    std::cout << "Next round" << std::endl;
     }
 
 }
