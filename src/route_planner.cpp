@@ -38,8 +38,8 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
       for(auto neighbor : current_node->neighbors){
         neighbor->parent = current_node;
         neighbor->h_value = CalculateHValue(neighbor);
-        neighbor->g_value += neighbor->distance(*current_node);                
-        open_list.emplace_back(neighbor); // Alessandra - forse qui devo controllare se c'e' gia'
+        neighbor->g_value = current_node->g_value + current_node->distance(*neighbor);               
+        open_list.emplace_back(neighbor);
         neighbor->visited = true;
     }
 
@@ -56,9 +56,9 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 /**
  * Compare the F values of two cells.
  */
-inline bool CompareFValue(const RouteModel::Node& a, const RouteModel::Node& b) {
-  float f1 = a.g_value + a.h_value; // f1 = g1 + h1
-  float f2 = b.g_value + b.h_value; // f2 = g2 + h2
+inline bool NodeCompare(RouteModel::Node * n1, RouteModel::Node * n2) {
+  float f1 = n1->g_value + n1->h_value; // f1 = g1 + h1
+  float f2 = n2->g_value + n2->h_value; // f2 = g2 + h2
   return f1 > f2; 
 }
 
@@ -69,7 +69,7 @@ RouteModel::Node *RoutePlanner::NextNode() {
     for (int i = 0; i < open_list.size(); i++){
       std::cout << (*open_list[i]).g_value + (*open_list[i]).h_value << std::endl;
     }
-    std::sort(open_list.front(), open_list.back(), CompareFValue);// open_list is sorted from furthest to closest
+	std::sort(this->open_list.begin(), this->open_list.end(), NodeCompare);    
     std::cout << "initializing next node" << std::endl;
     RouteModel::Node* next_node;
     next_node = open_list.back();
