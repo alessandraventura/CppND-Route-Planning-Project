@@ -64,16 +64,11 @@ inline bool NodeCompare(RouteModel::Node * n1, RouteModel::Node * n2) {
 
 RouteModel::Node *RoutePlanner::NextNode() {
   
-  if(open_list.size() > 0){
 	  std::sort(this->open_list.begin(), this->open_list.end(), NodeCompare);    
     RouteModel::Node* next_node;
     next_node = open_list.back();
     open_list.pop_back();
     return next_node;
-  }else{
-    std::cout << "open list empty" << std::endl;
-    return nullptr;
-  }
 }
 
 // TODO 6: Complete the ConstructFinalPath method to return the final path found from your A* search.
@@ -119,8 +114,10 @@ void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = nullptr;
     std::vector<RouteModel::Node> final_path;
   
-    current_node = start_node;
-    AddNeighbors(current_node);
+    // Preliminary operations: first step with the start node
+    start_node->visited = true;
+    open_list.emplace_back(start_node);
+    AddNeighbors(start_node);
     
     // TODO: Implement your solution here.
   while(open_list.size() > 0){
